@@ -4,28 +4,41 @@ import (
 	"fmt"
 )
 
-func Sqrt(x float64) float64 {
+func sqrtLogic() func(float64) float64 {
 	z := float64(1)
-	y := float64(1)
 
-	for i := 1; i < 10; i++ {
-		fmt.Println("====== Iteracion ", i)
-		fmt.Println("z = ", z)
+	return func(x float64) float64 {
+		// Resolve next equation
+		// z - (z^2 - x)/2.z
+		y := z
 		z *= z
-		fmt.Println("z = ", z)
 		z = z - x
-		fmt.Println("z = ", z)
 		z = z / (2 * y)
-		fmt.Println("z = ", z)
-
 		z = y - z
 		y = z
-		fmt.Println("====== Fin ", z, " \n ")
+		return z
+	}
+}
+
+func sqrt(x float64) float64 {
+	sqrt := sqrtLogic()
+
+	var result float64
+	i := 0
+
+	next := sqrt(x)
+	for next != result && i < 20 {
+		//fmt.Println("Next :", next, " result :", result)
+		result = next
+		next = sqrt(x)
+		i++
 	}
 
-	return z
+	fmt.Println("This result was generate in", i, "attempts")
+	return result
 }
 
 func main() {
-	fmt.Println(Sqrt(4))
+	in := float64(100)
+	fmt.Println("Square root of ", in, " is ", sqrt(in))
 }
